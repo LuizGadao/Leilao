@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
 import br.com.alura.leilao.R;
+import br.com.alura.leilao.model.Lance;
 import br.com.alura.leilao.model.Leilao;
 
 public class LancesLeilaoActivity extends AppCompatActivity {
@@ -25,6 +26,15 @@ public class LancesLeilaoActivity extends AppCompatActivity {
 
             TextView menorLance = findViewById(R.id.lances_leilao_menor_lance);
             menorLance.setText(String.valueOf(leilao.getMenorLance()));
+
+            TextView maioresLances = findViewById(R.id.lances_leilao_maiores_lances);
+
+            StringBuilder valores = new StringBuilder();
+            for (Lance lance : leilao.getTresMaioresLances()) {
+                valores.append(lance.getValor()).append("\n");
+            }
+
+            maioresLances.setText(valores);
         }
     }
 }
