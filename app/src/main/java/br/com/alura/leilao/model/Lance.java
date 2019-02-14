@@ -18,6 +18,10 @@ public class Lance implements Serializable, Comparable {
         return valor;
     }
 
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
     @Override
     public int compareTo(@NonNull Object o) {
         Lance l = (Lance) o;

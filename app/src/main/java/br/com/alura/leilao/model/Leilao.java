@@ -9,8 +9,8 @@ public class Leilao implements Serializable {
 
     private final String descricao;
     private final List<Lance> lances;
-    private double maiorLance = Double.NEGATIVE_INFINITY;
-    private double menorLance = Double.POSITIVE_INFINITY;
+    private double maiorLance = 0.0;
+    private double menorLance = 0.0;
 
     public Leilao(String descricao) {
         this.descricao = descricao;
@@ -18,20 +18,52 @@ public class Leilao implements Serializable {
     }
 
     public void add(Lance lance) {
+        double valor = lance.getValor();
+
+        if (maiorLance > valor) {
+            return;
+        }
+
+        if (!lances.isEmpty()) {
+            Usuario usuarioUltimoLance = lances.get(lances.size() - 1).getUsuario();
+            if (usuarioUltimoLance.equals(lance.getUsuario())) {
+                return;
+            }
+        }
+
+        if (!lances.isEmpty() && lances.size() >= 10) {
+            int limiteDeLances = 5;
+            int lancesDoMesmoUsuario = 0;
+            Usuario usuario = lance.getUsuario();
+
+            for (Lance l: lances) {
+                if (usuario.equals(l.getUsuario())) {
+                    lancesDoMesmoUsuario++;
+                }
+
+                if (lancesDoMesmoUsuario == limiteDeLances) return;
+            }
+        }
+
         lances.add(lance);
 
-        double valor = lance.getValor();
-        setMaiorLance(valor);
-        setMenorLance(valor);
+        if (lances.size() == 1) {
+            menorLance = valor;
+            maiorLance = valor;
+            return;
+        }
+
+        calculaMaiorLance(valor);
+        calculaMenorLance(valor);
     }
 
-    private void setMenorLance(double valor) {
+    private void calculaMenorLance(double valor) {
         if (valor < menorLance) {
             menorLance = valor;
         }
     }
 
-    private void setMaiorLance(double valor) {
+    private void calculaMaiorLance(double valor) {
         if (valor > maiorLance) {
             maiorLance = valor;
         }
@@ -53,5 +85,9 @@ public class Leilao implements Serializable {
         Collections.sort(lances);
         int size = lances.size();
         return lances.subList(0, size >= 3? 3 : size);
+    }
+
+    public int getQuantidadeDeLances() {
+        return lances.size();
     }
 }
