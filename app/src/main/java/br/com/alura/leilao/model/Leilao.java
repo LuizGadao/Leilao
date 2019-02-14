@@ -20,42 +20,85 @@ public class Leilao implements Serializable {
     public void add(Lance lance) {
         double valor = lance.getValor();
 
-        if (maiorLance > valor) {
+        if (!eUmLanceValido(lance)) {
             return;
-        }
-
-        if (!lances.isEmpty()) {
-            Usuario usuarioUltimoLance = lances.get(lances.size() - 1).getUsuario();
-            if (usuarioUltimoLance.equals(lance.getUsuario())) {
-                return;
-            }
-        }
-
-        if (!lances.isEmpty() && lances.size() >= 10) {
-            int limiteDeLances = 5;
-            int lancesDoMesmoUsuario = 0;
-            Usuario usuario = lance.getUsuario();
-
-            for (Lance l: lances) {
-                if (usuario.equals(l.getUsuario())) {
-                    lancesDoMesmoUsuario++;
-                }
-
-                if (lancesDoMesmoUsuario == limiteDeLances) return;
-            }
         }
 
         lances.add(lance);
 
-        if (lances.size() == 1) {
-            menorLance = valor;
-            maiorLance = valor;
+        if (ePrimeiroLance(valor)) {
             return;
         }
 
         calculaMaiorLance(valor);
         calculaMenorLance(valor);
     }
+
+    private boolean ePrimeiroLance(double valor) {
+        if (lances.size() == 1) {
+            menorLance = valor;
+            maiorLance = valor;
+            return true;
+        }
+        return false;
+    }
+
+
+    private boolean eUmLanceValido(Lance lance) {
+        if (valorLanceEmaiorQueUltimoLance(lance)) {
+            return false;
+        }
+
+        if (lanceAtualIgualUltimoLance(lance)) {
+            return false;
+        }
+
+        if (quantidadeDeLancesPorUsuarioEmairQueCinco(lance)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean valorLanceEmaiorQueUltimoLance(Lance lance) {
+        return maiorLance > lance.getValor();
+    }
+
+    private boolean lanceAtualIgualUltimoLance(Lance lance) {
+        if (lances.isEmpty()) {
+            return false;
+        }
+
+        Usuario usuarioUltimoLance = lances.get(lances.size() - 1).getUsuario();
+        if (usuarioUltimoLance.equals(lance.getUsuario())) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean quantidadeDeLancesPorUsuarioEmairQueCinco(Lance lance) {
+        if (lances.isEmpty() || lances.size() < 10) {
+            return false;
+        }
+
+        int limiteDeLances = 5;
+        int lancesDoMesmoUsuario = 0;
+        Usuario usuario = lance.getUsuario();
+
+        for (Lance l : lances) {
+            if (usuario.equals(l.getUsuario())) {
+                lancesDoMesmoUsuario++;
+            }
+
+            if (lancesDoMesmoUsuario == limiteDeLances) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 
     private void calculaMenorLance(double valor) {
         if (valor < menorLance) {
@@ -84,7 +127,7 @@ public class Leilao implements Serializable {
     public List<Lance> getTresMaioresLances() {
         Collections.sort(lances);
         int size = lances.size();
-        return lances.subList(0, size >= 3? 3 : size);
+        return lances.subList(0, size >= 3 ? 3 : size);
     }
 
     public int getQuantidadeDeLances() {
