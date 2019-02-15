@@ -4,6 +4,10 @@ import org.junit.Test;
 
 import java.util.List;
 
+import br.com.alura.leilao.exception.LanceMenorQueUltimoLance;
+import br.com.alura.leilao.exception.LancesSeguidosMesmoUsuarioException;
+import br.com.alura.leilao.exception.LimiteDeLancesPorUsuarioException;
+
 import static org.junit.Assert.*;
 
 public class LeilaoTest {
@@ -16,39 +20,6 @@ public class LeilaoTest {
     @Test
     public void verificaDescricao() {
         assertEquals("PS4", PS4.getDescricao());
-    }
-
-    @Test
-    public void verificaMaiorLanceValoresAleatorios() {
-        PS4.add(new Lance(ANA, 500.0));
-        PS4.add(new Lance(LUIZ, 900.0));
-        PS4.add(new Lance(ANA, 1900.0));
-        PS4.add(new Lance(LUIZ, 1500.0));
-        PS4.add(new Lance(ANA, 1100.0));
-
-        assertEquals(1900.0, PS4.getMaiorLance(), DELTA);
-    }
-
-    @Test
-    public void verificaMaiorLanceValoresDecrecentes() {
-        PS4.add(new Lance(LUIZ, 9000.0));
-        PS4.add(new Lance(ANA, 5000.0));
-        PS4.add(new Lance(LUIZ, 2900.0));
-        PS4.add(new Lance(ANA, 2500.0));
-        PS4.add(new Lance(LUIZ, 1100.0));
-
-        assertEquals(9000.0, PS4.getMaiorLance(), DELTA);
-    }
-
-    @Test
-    public void verificaMenorLanceValoresAleatorios() {
-        PS4.add(new Lance(LUIZ, 500.0));
-        PS4.add(new Lance(ANA, 900.0));
-        PS4.add(new Lance(LUIZ, 1100.0));
-        PS4.add(new Lance(ANA, 1500.0));
-        PS4.add(new Lance(LUIZ, 1900.0));
-
-        assertEquals(500.0, PS4.getMenorLance(), DELTA);
     }
 
     @Test
@@ -106,10 +77,10 @@ public class LeilaoTest {
     @Test
     public void verificaTresMaioresLancesMasInsereApenasDoisLances() {
         PS4.add(new Lance(LUIZ, 2900.0));
-        PS4.add(new Lance(ANA, 9900.0));
+        PS4.add(new Lance(ANA, 3900.0));
 
         assertEquals(2, PS4.getTresMaioresLances().size());
-        assertEquals(9900.0, PS4.getTresMaioresLances().get(0).getValor(), DELTA);
+        assertEquals(3900.0, PS4.getTresMaioresLances().get(0).getValor(), DELTA);
         assertEquals(2900.0, PS4.getTresMaioresLances().get(1).getValor(), DELTA);
     }
 
@@ -125,31 +96,24 @@ public class LeilaoTest {
         assertEquals(0.0, menorLance, DELTA);
     }
 
-    @Test
+    @Test(expected = LanceMenorQueUltimoLance.class)
     public void verificaSeAddMenorLance() {
-        PS4.add(new Lance(LUIZ, 9900.0));
-        PS4.add(new Lance(LUIZ, 2900.0));
-
-        int quantidadeDeLances = PS4.getQuantidadeDeLances();
-        assertEquals(1, quantidadeDeLances);
+        PS4.add(new Lance(LUIZ, 900.0));
+        PS4.add(new Lance(ANA, 2900.0));
+        PS4.add(new Lance(LUIZ, 1900.0));
     }
 
-    @Test
+    @Test(expected = LancesSeguidosMesmoUsuarioException.class)
     public void verificaDoisLancesSeguidosDoMesmoUsuario() {
         PS4.add(new Lance(LUIZ, 9900.0));
         PS4.add(new Lance(LUIZ, 10000.0));
-
-        int quantidadeDeLances = PS4.getQuantidadeDeLances();
-        assertEquals(1, quantidadeDeLances);
     }
 
-    @Test
+    @Test(expected = LimiteDeLancesPorUsuarioException.class)
     public void naoDeveTerCincoLancesDoMesmoUsuario() {
-        for (int i = 1; i < 13; i++) {
+        for (int i = 1; i < 12; i++) {
             Lance lance = new Lance(i % 2 == 0 ? LUIZ : ANA, i * 500.0);
             PS4.add(lance);
         }
-
-        assertEquals(10, PS4.getQuantidadeDeLances());
     }
 }

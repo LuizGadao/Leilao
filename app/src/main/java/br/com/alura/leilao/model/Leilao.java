@@ -5,6 +5,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import br.com.alura.leilao.exception.LanceMenorQueUltimoLance;
+import br.com.alura.leilao.exception.LancesSeguidosMesmoUsuarioException;
+import br.com.alura.leilao.exception.LimiteDeLancesPorUsuarioException;
+
 public class Leilao implements Serializable {
 
     private final String descricao;
@@ -19,10 +23,7 @@ public class Leilao implements Serializable {
 
     public void add(Lance lance) {
         double valor = lance.getValor();
-
-        if (!eUmLanceValido(lance)) {
-            return;
-        }
+        eUmLanceValido(lance);
 
         lances.add(lance);
 
@@ -31,7 +32,6 @@ public class Leilao implements Serializable {
         }
 
         calculaMaiorLance(valor);
-        calculaMenorLance(valor);
     }
 
     private boolean ePrimeiroLance(double valor) {
@@ -43,21 +43,14 @@ public class Leilao implements Serializable {
         return false;
     }
 
-
-    private boolean eUmLanceValido(Lance lance) {
+    private void eUmLanceValido(Lance lance) {
         if (valorLanceEmaiorQueUltimoLance(lance)) {
-            return false;
+            throw new LanceMenorQueUltimoLance();
+        } else if (lanceAtualIgualUltimoLance(lance)) {
+            throw new LancesSeguidosMesmoUsuarioException();
+        } else if (quantidadeDeLancesPorUsuarioEmairQueCinco(lance)) {
+            throw new LimiteDeLancesPorUsuarioException();
         }
-
-        if (lanceAtualIgualUltimoLance(lance)) {
-            return false;
-        }
-
-        if (quantidadeDeLancesPorUsuarioEmairQueCinco(lance)) {
-            return false;
-        }
-
-        return true;
     }
 
     private boolean valorLanceEmaiorQueUltimoLance(Lance lance) {
