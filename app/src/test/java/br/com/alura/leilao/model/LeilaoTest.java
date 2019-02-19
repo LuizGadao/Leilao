@@ -1,7 +1,9 @@
 package br.com.alura.leilao.model;
 
 import org.hamcrest.Matchers;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.util.List;
 
@@ -23,6 +25,9 @@ public class LeilaoTest {
     private final Leilao PS4 = new Leilao("PS4");
     private final Usuario LUIZ = new Usuario("Luiz");
     private final Usuario ANA = new Usuario("Ana");
+
+    @Rule
+    public ExpectedException mExpectedException = ExpectedException.none();
 
     @Test
     public void verificaDescricao() {
@@ -123,9 +128,12 @@ public class LeilaoTest {
         PS4.add(new Lance(LUIZ, 1900.0));
     }
 
-    @Test(expected = LancesSeguidosMesmoUsuarioException.class)
+    //@Test(expected = LancesSeguidosMesmoUsuarioException.class)
+    @Test
     public void verificaDoisLancesSeguidosDoMesmoUsuario() {
         PS4.add(new Lance(LUIZ, 9900.0));
+
+        mExpectedException.expect(LancesSeguidosMesmoUsuarioException.class);
         PS4.add(new Lance(LUIZ, 10000.0));
     }
 
