@@ -1,5 +1,6 @@
 package br.com.alura.leilao.model;
 
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import java.util.List;
@@ -8,7 +9,13 @@ import br.com.alura.leilao.exception.LanceMenorQueUltimoLance;
 import br.com.alura.leilao.exception.LancesSeguidosMesmoUsuarioException;
 import br.com.alura.leilao.exception.LimiteDeLancesPorUsuarioException;
 
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.closeTo;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 public class LeilaoTest {
 
@@ -19,7 +26,7 @@ public class LeilaoTest {
 
     @Test
     public void verificaDescricao() {
-        assertEquals("PS4", PS4.getDescricao());
+        assertThat(PS4.getDescricao(), is(equalTo("PS4")));
     }
 
     @Test
@@ -30,7 +37,7 @@ public class LeilaoTest {
         PS4.add(new Lance(ANA, 1500.0));
         PS4.add(new Lance(LUIZ, 1900.0));
 
-        assertEquals(90.0, PS4.getMenorLance(), DELTA);
+        assertThat(PS4.getMenorLance(), closeTo(90.0, DELTA));
     }
 
     @Test
@@ -42,9 +49,11 @@ public class LeilaoTest {
         PS4.add(new Lance(LUIZ, 9000.0));
 
         List<Lance> tresMaioresLances = PS4.getTresMaioresLances();
-        assertEquals(9000.0, tresMaioresLances.get(0).getValor(), DELTA);
-        assertEquals(5000.0, tresMaioresLances.get(1).getValor(), DELTA);
-        assertEquals(2900.0, tresMaioresLances.get(2).getValor(), DELTA);
+        assertThat(tresMaioresLances, contains(
+                new Lance(LUIZ, 9000.0),
+                new Lance(ANA, 5000.0),
+                new Lance(LUIZ, 2900.0)
+        ));
     }
 
     @Test
@@ -56,22 +65,31 @@ public class LeilaoTest {
         PS4.add(new Lance(LUIZ, 9000.0));
 
         List<Lance> tresMaioresLances = PS4.getTresMaioresLances();
-        assertEquals(3, tresMaioresLances.size());
-        assertEquals(9000.0, tresMaioresLances.get(0).getValor(), DELTA);
-        assertEquals(5000.0, tresMaioresLances.get(1).getValor(), DELTA);
-        assertEquals(2900.0, tresMaioresLances.get(2).getValor(), DELTA);
+        assertThat(tresMaioresLances, Matchers.<Lance>hasSize(3));
+        assertThat(tresMaioresLances, contains(
+                new Lance(LUIZ, 9000.0),
+                new Lance(ANA, 5000.0),
+                new Lance(LUIZ, 2900.0)
+        ));
+
+        /*assertThat(tresMaioresLances, both(Matchers.<Lance>hasSize(3))
+        .and(contains(
+                new Lance(LUIZ, 9000.0),
+                new Lance(ANA, 5000.0),
+                new Lance(LUIZ, 2900.0)
+        )));*/
     }
 
     @Test
     public void verificaTresMaioresLancesQuandoNaoInsereLances() {
-        assertEquals(0, PS4.getTresMaioresLances().size());
+        assertThat(PS4.getMenorLance(), closeTo(0.0, DELTA));
     }
 
     @Test
     public void verificaTresMaioresLancesMasInsereApenasUmLance() {
         PS4.add(new Lance(LUIZ, 2900.0));
-        assertEquals(1, PS4.getTresMaioresLances().size());
-        assertEquals(2900.0, PS4.getTresMaioresLances().get(0).getValor(), DELTA);
+        assertThat(PS4.getTresMaioresLances(), Matchers.<Lance>hasSize(1));
+        assertThat(PS4.getTresMaioresLances().get(0).getValor(), closeTo(2900.0, DELTA));
     }
 
     @Test
@@ -79,15 +97,17 @@ public class LeilaoTest {
         PS4.add(new Lance(LUIZ, 2900.0));
         PS4.add(new Lance(ANA, 3900.0));
 
-        assertEquals(2, PS4.getTresMaioresLances().size());
-        assertEquals(3900.0, PS4.getTresMaioresLances().get(0).getValor(), DELTA);
-        assertEquals(2900.0, PS4.getTresMaioresLances().get(1).getValor(), DELTA);
+        List<Lance> tresMaioresLances = PS4.getTresMaioresLances();
+
+        assertThat(tresMaioresLances, hasSize(2));
+        assertThat(tresMaioresLances.get(0).getValor(), closeTo(3900.0, DELTA));
+        assertThat(tresMaioresLances.get(1).getValor(), closeTo(2900.0, DELTA));
     }
 
     @Test
     public void verificaMenorLanceQaundoNaoHouverLances() {
         double menorLance = PS4.getMenorLance();
-        assertEquals(0.0, menorLance, DELTA);
+        assertThat(menorLance, closeTo(0.0, DELTA));
     }
 
     @Test
