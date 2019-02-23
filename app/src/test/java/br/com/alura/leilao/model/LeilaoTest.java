@@ -121,6 +121,13 @@ public class LeilaoTest {
         assertEquals(0.0, menorLance, DELTA);
     }
 
+    @Test
+    public void verificaValorFormatoEmReais() {
+        PS4.add(new Lance(ANA, 2900.0));
+
+        assertThat(PS4.getMaiorLanceEmReais(), is("R$ 2.900,00"));
+    }
+
     @Test(expected = LanceMenorQueUltimoLance.class)
     public void verificaSeAddMenorLance() {
         PS4.add(new Lance(LUIZ, 900.0));

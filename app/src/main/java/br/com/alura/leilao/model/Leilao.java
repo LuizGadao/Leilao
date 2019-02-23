@@ -13,8 +13,8 @@ public class Leilao implements Serializable {
 
     private final String descricao;
     private final List<Lance> lances;
-    private double maiorLance = 0.0;
-    private double menorLance = 0.0;
+    private Lance maiorLance = new NullLance();
+    private Lance menorLance = new NullLance();
 
     public Leilao(String descricao) {
         this.descricao = descricao;
@@ -27,17 +27,17 @@ public class Leilao implements Serializable {
 
         lances.add(lance);
 
-        if (ePrimeiroLance(valor)) {
+        if (ePrimeiroLance(lance)) {
             return;
         }
 
-        calculaMaiorLance(valor);
+        calculaMaiorLance(lance);
     }
 
-    private boolean ePrimeiroLance(double valor) {
+    private boolean ePrimeiroLance(Lance lance) {
         if (lances.size() == 1) {
-            menorLance = valor;
-            maiorLance = valor;
+            menorLance = lance;
+            maiorLance = lance;
             return true;
         }
         return false;
@@ -54,7 +54,7 @@ public class Leilao implements Serializable {
     }
 
     private boolean valorLanceEmaiorQueUltimoLance(Lance lance) {
-        return maiorLance > lance.getValor();
+        return maiorLance.getValor() > lance.getValor();
     }
 
     private boolean lanceAtualIgualUltimoLance(Lance lance) {
@@ -92,16 +92,9 @@ public class Leilao implements Serializable {
         return false;
     }
 
-
-    private void calculaMenorLance(double valor) {
-        if (valor < menorLance) {
-            menorLance = valor;
-        }
-    }
-
-    private void calculaMaiorLance(double valor) {
-        if (valor > maiorLance) {
-            maiorLance = valor;
+    private void calculaMaiorLance(Lance lance) {
+        if (lance.getValor() > maiorLance.getValor()) {
+            maiorLance = lance;
         }
     }
 
@@ -110,11 +103,15 @@ public class Leilao implements Serializable {
     }
 
     public double getMaiorLance() {
-        return maiorLance;
+        return maiorLance.getValor();
     }
 
     public double getMenorLance() {
-        return menorLance;
+        return menorLance.getValor();
+    }
+
+    public String getMaiorLanceEmReais() {
+        return maiorLance.getValorEmReais();
     }
 
     public List<Lance> getTresMaioresLances() {
@@ -125,5 +122,9 @@ public class Leilao implements Serializable {
 
     public int getQuantidadeDeLances() {
         return lances.size();
+    }
+
+    public String getMenorLanceEmReais() {
+        return menorLance.getValorEmReais();
     }
 }

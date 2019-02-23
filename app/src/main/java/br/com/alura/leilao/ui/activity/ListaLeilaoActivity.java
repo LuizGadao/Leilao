@@ -36,26 +36,26 @@ public class ListaLeilaoActivity extends AppCompatActivity {
 
     private List<Leilao> leiloesDeExemplo() {
         Leilao console = new Leilao("Console");
-        console.add(new Lance(new Usuario("Luiz"), 500.0));
         console.add(new Lance(new Usuario("Luiz"), 300.0));
+        console.add(new Lance(new Usuario("ANA"), 500.0));
         console.add(new Lance(new Usuario("Luiz"), 900.0));
-        console.add(new Lance(new Usuario("Luiz"), 1900.0));
-        console.add(new Lance(new Usuario("Luiz"), 1780.0));
+        console.add(new Lance(new Usuario("ANA"), 1900.0));
+        console.add(new Lance(new Usuario("Luiz"), 2780.0));
 
 
         Leilao bmx = new Leilao("BMX");
         bmx.add(new Lance(new Usuario("Luiz"), 500.0));
-        bmx.add(new Lance(new Usuario("Luiz"), 800.0));
+        bmx.add(new Lance(new Usuario("ANA"), 800.0));
         bmx.add(new Lance(new Usuario("Luiz"), 900.0));
-        bmx.add(new Lance(new Usuario("Luiz"), 5900.0));
+        bmx.add(new Lance(new Usuario("ANA"), 5900.0));
         bmx.add(new Lance(new Usuario("Luiz"), 9800.0));
 
         Leilao mtb = new Leilao("Caloi Elite 30");
+        mtb.add(new Lance(new Usuario("ANA"), 3000.0));
         mtb.add(new Lance(new Usuario("Luiz"), 5000.0));
-        mtb.add(new Lance(new Usuario("Luiz"), 3000.0));
-        mtb.add(new Lance(new Usuario("Luiz"), 1900.0));
-        mtb.add(new Lance(new Usuario("Luiz"), 11000.0));
-        mtb.add(new Lance(new Usuario("Luiz"), 2780.0));
+        mtb.add(new Lance(new Usuario("ANA"), 9000.0));
+        mtb.add(new Lance(new Usuario("Luiz"), 10080.0));
+        mtb.add(new Lance(new Usuario("ANA"), 11000.0));
 
         return new ArrayList<>(Arrays.asList(
                 console, bmx, mtb

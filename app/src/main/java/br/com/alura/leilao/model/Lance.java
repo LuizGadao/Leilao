@@ -3,6 +3,8 @@ package br.com.alura.leilao.model;
 import android.support.annotation.NonNull;
 
 import java.io.Serializable;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 public class Lance implements Serializable, Comparable {
 
@@ -55,5 +57,11 @@ public class Lance implements Serializable, Comparable {
         temp = Double.doubleToLongBits(valor);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         return result;
+    }
+
+    public String getValorEmReais() {
+        return NumberFormat.getCurrencyInstance(
+                new Locale("pt", "BR")
+        ).format(valor);
     }
 }
